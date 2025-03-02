@@ -52,6 +52,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.758.0",
     "@aws-sdk/s3-request-presigner": "3.758.0",
+    "@nestjs/cache-manager": "^3.0.0",
     "@nestjs/common": "11.0.11",
     "@nestjs/config": "4.0.0",
     "@nestjs/core": "11.0.11",
@@ -61,10 +62,13 @@
     "@nestjs/platform-express": "11.0.11",
     "@nestjs/swagger": "11.0.6",
     "@nestjs/typeorm": "11.0.0",
+    "@types/cache-manager-redis-store": "^3.0.0",
     "@types/multer-s3": "3.0.3",
     "@types/prompts": "2.4.9",
     "apple-signin-auth": "1.7.8",
     "bcryptjs": "3.0.2",
+    "cache-manager": "^6.4.0",
+    "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
     "dotenv": "16.4.7",
@@ -82,12 +86,14 @@
     "passport-anonymous": "1.0.1",
     "passport-jwt": "4.0.1",
     "pg": "8.13.3",
+    "redis": "^4.7.0",
     "reflect-metadata": "0.2.2",
     "rimraf": "6.0.1",
     "rxjs": "7.8.2",
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.1",
-    "typeorm": "0.3.20"
+    "typeorm": "0.3.20",
+    "wrap-ansi": "7.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.7.1",
@@ -213,5 +219,11 @@
         }
       }
     }
+  },
+  "resolutions": {
+    "string-width": "4.2.3",
+    "strip-ansi": "6.0.1",
+    "wrap-ansi": "7.0.0",
+    "ansi-regex": "5.0.1"
   }
 }
