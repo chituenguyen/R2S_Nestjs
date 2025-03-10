@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './modules/redis/redis.module';
 import appConfig from './config/app.config';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.modules';
 
 @Module({
   imports: [
@@ -12,7 +14,7 @@ import appConfig from './config/app.config';
       envFilePath: ['.env'],
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: process.env.DATABASE_TYPE as 'postgres',
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT || '3366'),
       username: process.env.DATABASE_USERNAME,
@@ -23,6 +25,8 @@ import appConfig from './config/app.config';
       logging: true,
     }),
     RedisModule,
+    UserModule,
+    ProductModule,
   ],
 })
 export class AppModule {}
