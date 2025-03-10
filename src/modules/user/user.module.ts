@@ -20,6 +20,13 @@ export class UserModule implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    const dbExists = await this.entityManager.query(
+      `SELECT 1 FROM pg_database WHERE datname = 'r2s_api'`,
+    );
+    if (dbExists.length === 0) {
+      await this.entityManager.query(`CREATE DATABASE r2s_api`);
+    }
+
     await this.entityManager.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
