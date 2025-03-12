@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
@@ -18,19 +23,24 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+    try {
+      const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
-    const user = this.entityManager.create(User, {
-      email: registerDto.email,
-      password: hashedPassword,
-    });
+      const user = this.entityManager.create(User, {
+        email: registerDto.email,
+        password: hashedPassword,
+      });
 
-    await this.entityManager.save(user);
+      await this.entityManager.save(user);
 
-    const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+      const tokens = await this.getTokens(user.id, user.email);
+      await this.updateRefreshToken(user.id, tokens.refreshToken);
 
-    return tokens;
+      return tokens;
+    } catch (error: any) {
+      Logger.error(error);
+      throw new BadRequestException('Failed to register');
+    }
   }
 
   async login(loginDto: LoginDto) {
