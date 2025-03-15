@@ -8,6 +8,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { Public } from '../decorators/public.decorator';
 import { Role } from '../enums/role.enum';
 import { Request } from 'express';
+import { Delete, Param } from '@nestjs/common';
 
 @Controller('auth')
 // @UseGuards(JwtAuthGuard, RolesGuard)
@@ -48,5 +49,20 @@ export class AuthController {
   @Get('protected')
   protected() {
     return 'You must be logged in to see this';
+  }
+
+  @Get('users')
+  getUsers() {
+    return this.authService.getAllUsers();
+  }
+
+  @Delete('delete/:id')
+  deleteUser(@Param('id') id: string) {
+    return this.authService.deleteUser(Number(id));
+  }
+
+  @Delete('delete-all')
+  deleteAllUsers() {
+    return this.authService.deleteAllUsers();
   }
 }
