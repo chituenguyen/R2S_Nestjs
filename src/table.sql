@@ -1,7 +1,12 @@
+DROP TABLE IF EXISTS users CASCADE;  -- Xóa bảng nếu tồn tại
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    firstname TEXT NOT NULL DEFAULT '',
+    lastname TEXT NOT NULL DEFAULT '',
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    address TEXT NOT NULL DEFAULT '',
     roles TEXT[] NOT NULL DEFAULT ARRAY['USER'],
     refresh_token TEXT,
     created_at TIMESTAMP DEFAULT now(),

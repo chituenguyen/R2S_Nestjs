@@ -9,10 +9,12 @@ export class OrderService {
   public async createOrder(order: Order) {
     try {
       // find products
-      const productIds = order.items.map((item) => `$${item.productId}`);
+      const productIds = order.items
+        .map((_, index) => `$${index + 1}`)
+        .join(',');
       const product: any[] = await this.entityManager.query(
-        `SELECT * FROM products WHERE id in (${productIds.join(',')})`,
-        [...order.items.map((item) => item.productId)],
+        `SELECT * FROM products WHERE id IN (${productIds})`,
+        order.items.map((item) => item.productId),
       );
       // insert order
       const orderResult = await this.entityManager.query(
@@ -55,6 +57,39 @@ export class OrderService {
         status: 'fail',
         message: error.message,
       };
+    }
+  }
+
+  public async getOrderById(orderId: number) {
+    try {
+      const order = await this.entityManager.query(
+        'SELECT * FROM orders WHERE id = $1',
+        [orderId],
+      );
+
+      if (!order.length) {
+        return { status: 'fail', message: 'Order not found' };
+      }
+
+      const items = await this.entityManager.query(
+        'SELECT * FROM order_items WHERE order_id = $1',
+        [orderId],
+      );
+
+      return { status: 'success', order: order[0], items };
+    } catch (error: any) {
+      Logger.error(error);
+      return { status: 'fail', message: error.message };
+    }
+  }
+
+  public async getAllOrders() {
+    try {
+      const orders = await this.entityManager.query('SELECT * FROM orders');
+      return { status: 'success', orders };
+    } catch (error: any) {
+      Logger.error(error);
+      return { status: 'fail', message: error.message };
     }
   }
 }

@@ -13,12 +13,21 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ default: '' })
+  firstname: string;
+
+  @Column({ default: '' })
+  lastname: string;
+
   @Column({ unique: true })
   email: string;
 
   @Column()
   @Exclude()
   password: string;
+
+  @Column({ default: '' })
+  address: string;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   roles: Role[];

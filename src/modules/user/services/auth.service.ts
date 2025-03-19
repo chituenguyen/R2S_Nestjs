@@ -29,6 +29,9 @@ export class AuthService {
       const user = this.entityManager.create(User, {
         email: registerDto.email,
         password: hashedPassword,
+        firstname: registerDto.firstname,
+        lastname: registerDto.lastname,
+        address: registerDto.address,
       });
 
       await this.entityManager.save(user);
@@ -41,6 +44,35 @@ export class AuthService {
       Logger.error(error);
       throw new BadRequestException('Failed to register');
     }
+  }
+
+  async getAllUsers() {
+    return this.entityManager.find(User);
+  }
+
+  async deleteUser(userId: number) {
+    const user = await this.entityManager.findOne(User, {
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new BadRequestException(`User with ID ${userId} not found`);
+    }
+
+    await this.entityManager.delete(User, userId);
+    return { message: `User with ID ${userId} has been deleted` };
+  }
+
+  async deleteAllUsers() {
+    await this.entityManager.clear(User); // Xoá tất cả user
+
+    // Reset lại ID về 1
+    await this.entityManager.query(
+      `ALTER SEQUENCE users_id_seq RESTART WITH 1`,
+    );
+    return {
+      message: 'All users have been deleted and ID has been reset to 1',
+    };
   }
 
   async login(loginDto: LoginDto) {
@@ -65,6 +97,23 @@ export class AuthService {
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return { tokens: tokens, user: user };
+  }
+
+  async updateProfile(
+    userId: number,
+    updateData: { firstname?: string; lastname?: string; address?: string },
+  ) {
+    const user = await this.entityManager.findOne(User, {
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    await this.entityManager.update(User, userId, updateData);
+
+    return { message: 'Profile updated successfully' };
   }
 
   async refreshTokens(userId: number, refreshToken: string) {

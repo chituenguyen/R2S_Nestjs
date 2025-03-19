@@ -1,6 +1,7 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../user/guards/jwt-auth.guard';
+
 export interface Order {
   userId: number;
   name: string;
@@ -19,5 +20,17 @@ export class OrderController {
   @UseGuards(JwtAuthGuard)
   async createOrder(@Body() order: Order) {
     return await this.orderService.createOrder(order);
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getOrder(@Param('id') id: number) {
+    return await this.orderService.getOrderById(id);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getAllOrders() {
+    return await this.orderService.getAllOrders();
   }
 }
