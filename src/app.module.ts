@@ -25,6 +25,13 @@ import { OrderItemModule } from './modules/orderItem/orderItem.modules';
       autoLoadEntities: true,
       synchronize: false,
       logging: true,
+      ssl:
+        process.env.DATABASE_SSL_ENABLED === 'true'
+          ? {
+              rejectUnauthorized:
+                process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
+            }
+          : false,
     }),
     RedisModule,
     UserModule,
