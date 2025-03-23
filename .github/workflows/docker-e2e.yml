@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # Change to your main branch name (main, master, etc.)
 
 jobs:
   deploy:
@@ -12,23 +12,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        
-    - name: Add host key
+    - name: Create SSH key
       run: |
         mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/uri_key_pair.pem
+        chmod 600 ~/.ssh/uri_key_pair.pem
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         
     - name: Create .env file on EC2
       run: |
-        echo "${{ secrets.ENV_FILE }}" | ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cat > ~/R2S_Nestjs/.env"
+        echo "${{ secrets.ENV_FILE }}" | ssh -i ~/.ssh/uri_key_pair.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cat > ~/R2S_Nestjs/.env"
         
     - name: Deploy to EC2
       run: |
-        ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cd ~/R2S_Nestjs && \
+        ssh -i ~/.ssh/uri_key_pair.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cd ~/R2S_Nestjs && \
         git pull origin main && \
         yarn install && \
         yarn build && \
