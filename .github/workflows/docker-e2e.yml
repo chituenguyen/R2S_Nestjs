@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ main ]  # Change to your main branch name (main, master, etc.)
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -12,20 +12,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Create SSH key
+    - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/uri_key_pair.pem
-        chmod 600 ~/.ssh/uri_key_pair.pem
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         
     - name: Create .env file on EC2
       run: |
-        echo "${{ secrets.ENV_FILE }}" | ssh -i ~/.ssh/uri_key_pair.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cat > ~/R2S_Nestjs/.env"
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo '${{ secrets.ENV_FILE }}' > ~/R2S_Nestjs/.env"
         
     - name: Deploy to EC2
       run: |
-        ssh -i ~/.ssh/uri_key_pair.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cd ~/R2S_Nestjs && \
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cd ~/R2S_Nestjs && \
         git pull origin main && \
         yarn install && \
         yarn build && \
