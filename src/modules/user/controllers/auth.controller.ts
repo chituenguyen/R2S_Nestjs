@@ -10,7 +10,6 @@ import { Role } from '../enums/role.enum';
 import { Request } from 'express';
 
 @Controller('auth')
-// @UseGuards(JwtAuthGuard, RolesGuard)
 export class AuthController {
   constructor(private authService: AuthService) {}
 

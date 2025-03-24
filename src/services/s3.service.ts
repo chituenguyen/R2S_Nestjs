@@ -3,15 +3,16 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
-  DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { ConfigService } from '@nestjs/config';
+import { S3 } from 'aws-sdk';
 
 @Injectable()
 export class S3Service {
   private s3Client: S3Client;
   private bucket: string;
+  private s3: S3;
 
   constructor(private configService: ConfigService) {
     this.bucket = this.configService.get<string>('AWS_S3_BUCKET', {
@@ -28,6 +29,11 @@ export class S3Service {
           { infer: true },
         ) as string,
       },
+    });
+    this.s3 = new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION,
     });
   }
 
@@ -55,12 +61,25 @@ export class S3Service {
     return getSignedUrl(this.s3Client, command, { expiresIn: 3600 }); // URL expires in 1 hour
   }
 
-  async deleteFile(key: string): Promise<void> {
-    const command = new DeleteObjectCommand({
+  async deleteFile(imageUrl: string): Promise<void> {
+    // Extract the key from the URL
+    const key = this.getKeyFromUrl(imageUrl);
+    if (!key) {
+      throw new Error('Invalid image URL');
+    }
+    const params = {
       Bucket: this.bucket,
       Key: key,
-    });
+    };
 
-    await this.s3Client.send(command);
+    await this.s3.deleteObject(params).promise();
+  }
+
+  private getKeyFromUrl(url: string): string {
+    // Extract key from S3 URL
+    // Example URL: https://bucket-name.s3.region.amazonaws.com/products/image.jpg
+    // Returns: products/image.jpg
+    const urlParts = url.split('/');
+    return urlParts.slice(3).join('/');
   }
 }

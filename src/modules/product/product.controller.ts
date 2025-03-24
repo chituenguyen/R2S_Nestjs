@@ -1,5 +1,20 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductService } from './product.service';
+
+export interface UpdateProductDto {
+  name: string;
+  price: number;
+  description: string;
+}
 
 @Controller('products')
 export class ProductController {
@@ -15,13 +30,13 @@ export class ProductController {
     return await this.productService.findOne(id);
   }
 
-  @Delete(':id')
-  async deleteProduct(@Param('id') id: string) {
-    return this.productService.deleteProduct(id);
-  }
-
-  @Delete()
-  async deleteAllProducts() {
-    return this.productService.resetProductTable();
+  @Put(':id')
+  @UseInterceptors(FilesInterceptor('images', 10)) // Allow up to 10 images
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.productService.update(id, updateProductDto, images);
   }
 }

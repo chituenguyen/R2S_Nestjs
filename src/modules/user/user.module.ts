@@ -19,23 +19,5 @@ export class UserModule implements OnModuleInit {
     private entityManager: EntityManager,
   ) {}
 
-  async onModuleInit() {
-    // const dbExists = await this.entityManager.query(
-    //   `SELECT 1 FROM pg_database WHERE datname = 'r2s_api'`,
-    // );
-    // if (dbExists.length === 0) {
-    //   await this.entityManager.query(`CREATE DATABASE r2s_api`);
-    // }
-    // await this.entityManager.query(`
-    //   CREATE TABLE IF NOT EXISTS users (
-    //     id SERIAL PRIMARY KEY,
-    //     email TEXT UNIQUE NOT NULL,
-    //     password TEXT NOT NULL,
-    //     roles TEXT[] NOT NULL DEFAULT ARRAY['USER']::TEXT[],
-    //     refresh_token TEXT,
-    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    //     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    //   );
-    // `);
-  }
+  async onModuleInit() {}
 }
