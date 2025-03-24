@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RedisModule } from './modules/redis/redis.module';
+// import { RedisModule } from './modules/redis/redis.module';
 import appConfig from './config/app.config';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.modules';
@@ -34,7 +34,7 @@ import { UploadModule } from './upload/upload.module';
             }
           : false,
     }),
-    RedisModule,
+    // RedisModule,
     UserModule,
     ProductModule,
     OrderModule,
