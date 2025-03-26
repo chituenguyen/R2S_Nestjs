@@ -38,18 +38,22 @@ export class S3Service {
   }
 
   async uploadFile(file: Express.Multer.File, key: string): Promise<string> {
-    const command = new PutObjectCommand({
-      Bucket: this.bucket,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    });
+    try {
+      const command = new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      });
 
-    await this.s3Client.send(command);
-    return `https://${this.bucket}.s3.${this.configService.get<string>(
-      'AWS_REGION',
-      { infer: true },
-    )}.amazonaws.com/${key}`;
+      await this.s3Client.send(command);
+      return `https://${this.bucket}.s3.${this.configService.get<string>(
+        'AWS_REGION',
+        { infer: true },
+      )}.amazonaws.com/${key}`;
+    } catch (error) {
+      throw new Error(`Failed to upload file: ${error.message}`);
+    }
   }
 
   async getSignedUrl(key: string): Promise<string> {

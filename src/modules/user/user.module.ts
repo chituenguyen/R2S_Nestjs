@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Module, OnModuleInit } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
-
+// import * as bcrypt from 'bcrypt';
 @Module({
   imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
   controllers: [AuthController],
@@ -19,5 +19,12 @@ export class UserModule implements OnModuleInit {
     private entityManager: EntityManager,
   ) {}
 
-  async onModuleInit() {}
+  async onModuleInit() {
+    // create admin user
+    // const hashedPassword = await bcrypt.hash('admin', 10);
+    // await this.entityManager.query(
+    //   'INSERT INTO users (email, password, roles) VALUES ($1, $2, $3) ON CONFLICT (email) DO NOTHING',
+    //   ['admin@gmail.com', hashedPassword, '{ADMIN}'],
+    // );
+  }
 }
