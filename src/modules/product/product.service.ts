@@ -35,6 +35,7 @@ export class ProductService {
     updateProductDto: UpdateProductDto,
     files?: Express.Multer.File[],
   ): Promise<void> {
+    console.log(files);
     const { name, price, description } = updateProductDto;
 
     const product = await this.findOne(id);
