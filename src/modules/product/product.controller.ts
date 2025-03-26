@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Post,
   Put,
   UploadedFiles,
   UseInterceptors,
@@ -14,6 +15,14 @@ export interface UpdateProductDto {
   name: string;
   price: number;
   description: string;
+}
+
+export interface CreateProductDto {
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+  brand: string;
 }
 
 @Controller('products')
@@ -37,6 +46,15 @@ export class ProductController {
     @Body() updateProductDto: UpdateProductDto,
     @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.productService.update(id, updateProductDto, images);
+    return await this.productService.update(id, updateProductDto, images);
+  }
+
+  @Post()
+  @UseInterceptors(FilesInterceptor('images', 10)) // Allow up to 10 images
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return await this.productService.create(createProductDto, images);
   }
 }
