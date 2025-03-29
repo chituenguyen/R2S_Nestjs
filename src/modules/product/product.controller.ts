@@ -60,7 +60,7 @@ export class ProductController {
   }
 
   @Get('search')
-  async search(@Query('query') query: string) {
-    return await this.productService.search(query);
+  async search(@Query('name') name: string) {
+    return await this.productService.search(name);
   }
 }
