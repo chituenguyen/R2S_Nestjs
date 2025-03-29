@@ -57,4 +57,17 @@ export class OrderService {
       };
     }
   }
+
+  public async findAll() {
+    const orders = await this.entityManager.query('SELECT * FROM orders');
+    return orders;
+  }
+
+  public async updateOrder(id: string) {
+    const order = await this.entityManager.query(
+      'UPDATE orders SET status = $1 WHERE id = $2',
+      ['done', id],
+    );
+    return order;
+  }
 }
