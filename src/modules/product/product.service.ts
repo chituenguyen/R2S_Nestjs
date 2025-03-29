@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
@@ -137,10 +138,10 @@ export class ProductService {
     return product;
   }
 
-  public async search(query: string) {
+  public async search(@Query('name') name: string) {
     const data = await this.entityManager.query(
       'SELECT * FROM products WHERE name ILIKE $1',
-      [`%${query}%`],
+      [`%${name}%`],
     );
     return { data: data };
   }
