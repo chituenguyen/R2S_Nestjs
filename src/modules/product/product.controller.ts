@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -56,5 +57,10 @@ export class ProductController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return await this.productService.create(createProductDto, images);
+  }
+
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return await this.productService.search(query);
   }
 }

@@ -136,4 +136,12 @@ export class ProductService {
 
     return product;
   }
+
+  public async search(query: string) {
+    const data = await this.entityManager.query(
+      'SELECT * FROM products WHERE name ILIKE $1',
+      [`%${query}%`],
+    );
+    return { data: data };
+  }
 }
