@@ -35,6 +35,11 @@ export class ProductController {
     return await this.productService.findAll();
   }
 
+  @Get('search')
+  async search(@Query('name') name: string) {
+    return await this.productService.search(name);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.productService.findOne(id);
@@ -57,10 +62,5 @@ export class ProductController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return await this.productService.create(createProductDto, images);
-  }
-
-  @Get('search')
-  async search(@Query('name') name: string) {
-    return await this.productService.search(name);
   }
 }
