@@ -9,12 +9,8 @@ export class OrderService {
   public async createOrder(order: Order) {
     try {
       // find products
-      const placeholders = order.items
-        .map((_, index) => `$${index + 1}`)
-        .join(',');
       const product = await this.entityManager.query(
-        `SELECT * FROM products WHERE id in (${placeholders})`,
-        [...order.items.map((item) => item.productId)],
+        `SELECT * FROM products WHERE id in (${order.items.map((item) => item.productId).join(',')})`,
       );
       // insert order
       const orderResult = await this.entityManager.query(
