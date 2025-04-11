@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -62,5 +63,10 @@ export class ProductController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return await this.productService.create(createProductDto, images);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.productService.delete(id);
   }
 }

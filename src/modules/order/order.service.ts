@@ -68,4 +68,11 @@ export class OrderService {
     );
     return order;
   }
+
+  public async deleteOrder(id: string) {
+    await this.entityManager.query('DELETE FROM orders WHERE id = $1', [id]);
+    return {
+      status: 'success',
+    };
+  }
 }

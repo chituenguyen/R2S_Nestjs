@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 export interface Order {
   userId: number;
@@ -33,5 +41,10 @@ export class OrderController {
   // @Roles(Role.ADMIN)
   async updateOrder(@Param('id') id: string) {
     return await this.orderService.updateOrder(id);
+  }
+
+  @Delete(':id')
+  async deleteOrder(@Param('id') id: string) {
+    return await this.orderService.deleteOrder(id);
   }
 }

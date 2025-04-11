@@ -144,4 +144,8 @@ export class ProductService {
     );
     return { data: data };
   }
+
+  public async delete(id: string) {
+    await this.entityManager.query('DELETE FROM products WHERE id = $1', [id]);
+  }
 }
