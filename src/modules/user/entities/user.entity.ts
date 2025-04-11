@@ -20,6 +20,12 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column()
+  name: string;
+
+  @Column()
+  address: string;
+
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   roles: Role[];
 

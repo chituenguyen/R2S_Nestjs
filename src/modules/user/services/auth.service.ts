@@ -2,13 +2,14 @@ import {
   BadRequestException,
   Injectable,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { User } from '../entities/user.entity';
-import { RegisterDto } from '../dto/register.dto';
+import { RegisterDto, UpdateProfileDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -29,6 +30,8 @@ export class AuthService {
       const user = this.entityManager.create(User, {
         email: registerDto.email,
         password: hashedPassword,
+        name: registerDto.name,
+        address: registerDto.address,
       });
 
       await this.entityManager.save(user);
@@ -41,6 +44,23 @@ export class AuthService {
       Logger.error(error);
       throw new BadRequestException('Failed to register');
     }
+  }
+
+  async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
+    const user = await this.entityManager.findOne(User, {
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.name = updateProfileDto.name;
+    user.address = updateProfileDto.address;
+
+    await this.entityManager.save(user);
+
+    return user;
   }
 
   async login(loginDto: LoginDto) {
