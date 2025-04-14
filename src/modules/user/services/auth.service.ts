@@ -47,20 +47,29 @@ export class AuthService {
   }
 
   async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
-    const user = await this.entityManager.findOne(User, {
-      where: { id: userId },
-    });
+    try {
+      const user = await this.entityManager.findOne(User, {
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      await this.entityManager.query(
+        'UPDATE users SET name = $1, address = $2 WHERE id = $3',
+        [updateProfileDto.name, updateProfileDto.address, userId],
+      );
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+      return {
+        message: 'Profile updated successfully',
+        user: user,
+      };
+    } catch (error: any) {
+      Logger.error(error);
+      return {
+        message: 'Failed to update profile',
+        error: error.message,
+      };
     }
-
-    user.name = updateProfileDto.name;
-    user.address = updateProfileDto.address;
-
-    await this.entityManager.save(user);
-
-    return user;
   }
 
   async login(loginDto: LoginDto) {
@@ -113,6 +122,21 @@ export class AuthService {
 
   async logout(userId: number) {
     await this.entityManager.update(User, userId, { refresh_token: undefined });
+  }
+
+  async getProfile(userId: number) {
+    try {
+      const user = await this.entityManager.findOne(User, {
+        where: { id: userId },
+      });
+      return user;
+    } catch (error: any) {
+      Logger.error(error);
+      return {
+        message: 'Failed to get profile',
+        error: error.message,
+      };
+    }
   }
 
   private async getTokens(userId: number, email: string) {

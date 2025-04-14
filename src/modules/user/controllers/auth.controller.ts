@@ -41,6 +41,13 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Req() req: Request) {
+    const user = req.user as { id: number };
+    return this.authService.getProfile(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Put('update-profile')
   updateProfile(
     @Body() updateProfileDto: UpdateProfileDto,
