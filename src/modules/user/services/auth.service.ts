@@ -68,11 +68,7 @@ export class AuthService {
         },
       };
     } catch (error: any) {
-      Logger.error(error);
-      return {
-        message: 'Failed to update profile',
-        error: error.message,
-      };
+      throw new BadRequestException('Failed to update profile' + error.message);
     }
   }
 
@@ -136,10 +132,7 @@ export class AuthService {
       return user;
     } catch (error: any) {
       Logger.error(error);
-      return {
-        message: 'Failed to get profile',
-        error: error.message,
-      };
+      throw new BadRequestException('Failed to get profile' + error.message);
     }
   }
 
