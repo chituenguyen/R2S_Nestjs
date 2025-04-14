@@ -61,7 +61,11 @@ export class AuthService {
 
       return {
         message: 'Profile updated successfully',
-        user: user,
+        user: {
+          ...user,
+          name: updateProfileDto.name,
+          address: updateProfileDto.address,
+        },
       };
     } catch (error: any) {
       Logger.error(error);
