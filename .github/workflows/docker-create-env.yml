@@ -15,7 +15,7 @@ jobs:
         echo "${{ secrets.ENV_FILE }}" > .env
         
     - name: Upload .env as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: env-file
         path: .env
