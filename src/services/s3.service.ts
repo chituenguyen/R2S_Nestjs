@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   S3Client,
   PutObjectCommand,
@@ -52,7 +52,8 @@ export class S3Service {
         { infer: true },
       )}.amazonaws.com/${key}`;
     } catch (error) {
-      throw new Error(`Failed to upload file: ${error.message}`);
+      Logger.error(`Failed to upload file: ${error.message}`);
+      return '';
     }
   }
 

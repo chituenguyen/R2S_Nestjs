@@ -19,12 +19,12 @@ import { UploadModule } from './upload/upload.module';
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'postgres',
       host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT || '3366'),
+      port: parseInt(process.env.DATABASE_PORT || '5432'),
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
       logging: true,
       ssl:
         process.env.DATABASE_SSL_ENABLED === 'true'
